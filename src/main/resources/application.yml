@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: DocumentAnnotator
+  datasource:
+    url: jdbc:postgresql://localhost:5432/document_annotator
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
