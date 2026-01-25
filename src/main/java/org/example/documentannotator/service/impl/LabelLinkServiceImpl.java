@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LabelLinkServiceImpl implements LabelLinkService {
 
@@ -26,5 +28,15 @@ public class LabelLinkServiceImpl implements LabelLinkService {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public List<LabelLink> findByFromLabelId(Long fromLabelId) {
+        return repository.findByFromLabelId(fromLabelId);
+    }
+
+    @Override
+    public List<LabelLink> findByToLabelId(Long toLabelId) {
+        return repository.findByToLabelId(toLabelId);
     }
 }

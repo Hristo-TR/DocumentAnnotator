@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -26,5 +28,25 @@ public class AnnotationServiceImpl implements AnnotationService {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public List<Annotation> findByDocumentId(Long documentId) {
+        return repository.findByDocumentId(documentId);
+    }
+
+    @Override
+    public List<Annotation> findByLabelId(Long labelId) {
+        return repository.findByLabelId(labelId);
+    }
+
+    @Override
+    public List<Annotation> findByType(org.example.documentannotator.data.enumeration.AnnotationType type) {
+        return repository.findByAnnotationType(type);
+    }
+
+    @Override
+    public List<Annotation> findByDocumentIdAndPageNumber(Long documentId, Integer pageNumber) {
+        return repository.findByDocumentIdAndPageNumber(documentId, pageNumber);
     }
 }
