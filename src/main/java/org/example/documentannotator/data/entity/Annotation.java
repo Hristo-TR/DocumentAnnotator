@@ -1,7 +1,10 @@
 package org.example.documentannotator.data.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.example.documentannotator.data.enumeration.AnnotationType;
 
 import java.math.BigDecimal;
@@ -72,6 +75,8 @@ public class Annotation implements BaseEntity {
         this.y = y;
         this.width = width;
         this.height = height;
+        // Clear unused fields based on annotation type
+        clearUnusedFields();
     }
 
     @Override
@@ -106,6 +111,39 @@ public class Annotation implements BaseEntity {
 
     public void setAnnotationType(AnnotationType annotationType) {
         this.annotationType = annotationType;
+        clearUnusedFields();
+    }
+
+    /**
+     * Clears fields that are not used for the current annotation type.
+     * Called automatically before persistence and when annotation type is set.
+     * Can also be called explicitly to ensure fields are cleared before validation.
+     */
+    public void clearUnusedFields() {
+        if (annotationType == null) {
+            return;
+        }
+        switch (annotationType) {
+            case TEXT -> {
+                // Clear REGION-specific fields
+                this.pageNumber = null;
+                this.x = null;
+                this.y = null;
+                this.width = null;
+                this.height = null;
+            }
+            case REGION -> {
+                // Clear TEXT-specific fields
+                this.startOffset = null;
+                this.endOffset = null;
+            }
+        }
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void prepareForPersistence() {
+        clearUnusedFields();
     }
 
     public Long getStartOffset() {
@@ -162,27 +200,5 @@ public class Annotation implements BaseEntity {
 
     public void setHeight(BigDecimal height) {
         this.height = height;
-    }
-
-    /**
-     * Essential type-specific validation:
-     * - TEXT requires startOffset/endOffset and start < end
-     * - REGION requires pageNumber and x/y/width/height
-     */
-    @AssertTrue(message = "Invalid annotation fields for annotationType")
-    public boolean isValidForType() {
-        if (annotationType == null) {
-            return true; // handled by @NotNull; avoid duplicate messages
-        }
-        return switch (annotationType) {
-            case TEXT -> startOffset != null
-                    && endOffset != null
-                    && startOffset < endOffset;
-            case REGION -> pageNumber != null
-                    && x != null
-                    && y != null
-                    && width != null
-                    && height != null;
-        };
     }
 }

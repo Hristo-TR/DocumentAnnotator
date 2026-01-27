@@ -6,6 +6,7 @@ import org.example.documentannotator.data.exception.DuplicateDocumentException;
 import org.example.documentannotator.data.repository.AnnotationRepository;
 import org.example.documentannotator.data.repository.DocumentRepository;
 import org.example.documentannotator.service.DocumentService;
+import org.example.documentannotator.util.DocxHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -97,11 +98,28 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String getDocumentContent(Long documentId) {
         Document document = findById(documentId);
+        if (document.getFileType() != FileType.TXT) {
+            throw new IllegalArgumentException("Content extraction only supported for TXT files. Use /download endpoint for other file types.");
+        }
         try {
             return Files.readString(Paths.get(document.getPath()));
         } catch (IOException e) {
             logger.error("Failed to read document content", e);
             throw new RuntimeException("Failed to read document content", e);
+        }
+    }
+
+    @Override
+    public String getDocumentAsHtml(Long documentId) {
+        Document document = findById(documentId);
+        if (document.getFileType() != FileType.DOCX) {
+            throw new IllegalArgumentException("HTML conversion only supported for DOCX files.");
+        }
+        try {
+            return DocxHelper.convertToHtml(document.getPath());
+        } catch (IOException e) {
+            logger.error("Failed to convert DOCX to HTML", e);
+            throw new RuntimeException("Failed to convert DOCX to HTML", e);
         }
     }
 

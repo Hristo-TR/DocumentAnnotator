@@ -14,6 +14,8 @@ public interface DocumentService extends BaseService<Document> {
 
     String getDocumentContent(Long documentId);
 
+    String getDocumentAsHtml(Long documentId);
+
     byte[] downloadDocument(Long documentId);
 
     List<Document> findAll(String q, FileType type);

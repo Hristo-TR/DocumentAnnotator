@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -86,6 +85,14 @@ public class DocumentController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/html")
+    public ResponseEntity<String> getDocumentAsHtml(@PathVariable Long id) {
+        String html = documentService.getDocumentAsHtml(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_HTML)
+                .body(html);
     }
 
     @GetMapping("/{id}/download")
