@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
+
 @Entity
 @Table(name = "labels")
 public class Label implements BaseEntity {
@@ -31,16 +33,16 @@ public class Label implements BaseEntity {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private Long createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Long updatedAt;
+    private Instant updatedAt;
 
     public Label() {
     }
 
-    public Label(String name, String color, Label parentLabel, Long createdAt, Long updatedAt) {
+    public Label(String name, String color, Label parentLabel, Instant createdAt, Instant updatedAt) {
         this.name = name;
         this.color = color;
         this.parentLabel = parentLabel;
@@ -82,19 +84,19 @@ public class Label implements BaseEntity {
         this.parentLabel = parentLabel;
     }
 
-    public Long getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Long createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Long getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Long updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 }
