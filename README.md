@@ -56,9 +56,9 @@ REST API under `/api/`:
 - **Reports** – `/api/reports/top-labels`, `/api/reports/label-density`, `/api/reports/summary`.
 
 CORS is allowed from all origins. Error responses use a common shape: `{ "error": "message" }` (and `fieldErrors` for
-validation). Full endpoint and payload details: **[API.md](API.md)**.
+validation).
 
 ## DOCX → HTML
 
 DOCX documents can be converted to HTML for in-browser viewing and region annotation: **GET**
-`/api/documents/{id}/html`. See **[DOCX_HTML_ENDPOINT.md](DOCX_HTML_ENDPOINT.md)** for details.
+`/api/documents/{id}/html`.
