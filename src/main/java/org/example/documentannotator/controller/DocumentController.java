@@ -38,6 +38,9 @@ public class DocumentController {
         this.annotationConverter = annotationConverter;
     }
 
+    /**
+     * Upload the given file to the storage and create db record
+     */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DocumentDto> uploadDocument(@RequestParam("file") MultipartFile file) {
         try {
@@ -49,6 +52,9 @@ public class DocumentController {
         }
     }
 
+    /**
+     * Create a new .txt file with its content the given text
+     */
     @PostMapping(value = "/text", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DocumentDto> createTextDocument(@Valid @RequestBody CreateTextDocumentRequest request) {
         try {
@@ -60,6 +66,9 @@ public class DocumentController {
         }
     }
 
+    /**
+     * Retrieve all documents, optionally fitlered by name and type
+     */
     @GetMapping
     public ResponseEntity<List<DocumentDto>> getAllDocuments(
             @RequestParam(required = false) String q,
@@ -68,12 +77,19 @@ public class DocumentController {
         return ResponseEntity.ok(documentConverter.toDtoList(documents));
     }
 
+    /**
+     * Retrieve document with given id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<DocumentDto> getDocument(@PathVariable Long id) {
         var document = documentService.findById(id);
         return ResponseEntity.ok(documentConverter.toDto(document));
     }
 
+    /**
+     * Retrieve the document content of a file with given id
+     * ! Only works for txt files!
+     */
     @GetMapping("/{id}/content")
     public ResponseEntity<DocumentContentResponse> getDocumentContent(@PathVariable Long id) {
         var document = documentService.findById(id);
@@ -87,6 +103,10 @@ public class DocumentController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Retrieve the content of a document in an html format
+     * ! Only available for docx files!
+     */
     @GetMapping("/{id}/html")
     public ResponseEntity<String> getDocumentAsHtml(@PathVariable Long id) {
         String html = documentService.getDocumentAsHtml(id);
@@ -95,6 +115,9 @@ public class DocumentController {
                 .body(html);
     }
 
+    /**
+     * download actual file with given id
+     */
     @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> downloadDocument(@PathVariable Long id) {
         var document = documentService.findById(id);
@@ -109,12 +132,18 @@ public class DocumentController {
                 .body(fileContent);
     }
 
+    /**
+     * get annotations for document with given id
+     */
     @GetMapping("/{id}/annotations")
     public ResponseEntity<List<AnnotationDto>> getDocumentAnnotations(@PathVariable Long id) {
         var annotations = annotationService.findByDocumentId(id);
         return ResponseEntity.ok(annotationConverter.toDtoList(annotations));
     }
 
+    /**
+     * delete document with given id
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
         documentService.deleteById(id);

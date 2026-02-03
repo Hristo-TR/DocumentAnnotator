@@ -19,6 +19,10 @@ public class ReportsController {
         this.reportsService = reportsService;
     }
 
+    /**
+     * Retrieves a ranking of the most used labels, including their names and times used
+     * optionally show only for specified document
+     */
     @GetMapping("/top-labels")
     public ResponseEntity<List<TopLabelResponse>> getTopLabels(
             @RequestParam(required = false) Long documentId) {
@@ -26,6 +30,10 @@ public class ReportsController {
         return ResponseEntity.ok(topLabels);
     }
 
+    /**
+     * Retrieves annotation count per page for that document and label
+     * Only works for PDF files
+     */
     @GetMapping("/label-density")
     public ResponseEntity<List<LabelDensityResponse>> getLabelDensity(
             @RequestParam Long documentId,
@@ -34,6 +42,9 @@ public class ReportsController {
         return ResponseEntity.ok(density);
     }
 
+    /**
+     * Retrieves the counts of documents, labels, links and annotations
+     */
     @GetMapping("/summary")
     public ResponseEntity<SummaryResponse> getSummary() {
         SummaryResponse summary = reportsService.getSummary();

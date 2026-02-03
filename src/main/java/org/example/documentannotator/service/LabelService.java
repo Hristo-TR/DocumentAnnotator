@@ -5,7 +5,7 @@ import org.example.documentannotator.data.entity.Label;
 import java.util.List;
 
 public interface LabelService extends BaseService<Label> {
-    List<Label> findAllAsTree();
+    List<Label> findAllParents();
 
     List<Label> findAllFlat();
 

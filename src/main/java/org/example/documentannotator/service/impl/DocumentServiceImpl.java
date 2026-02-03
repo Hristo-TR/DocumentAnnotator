@@ -54,9 +54,14 @@ public class DocumentServiceImpl implements DocumentService {
         return logger;
     }
 
+    /**
+     * Uploads a file to storage and creates a record for it in the db
+     */
     @Override
     public Document uploadDocument(MultipartFile file) throws Exception {
         String originalFilename = file.getOriginalFilename();
+        // Safety checks
+
         if (originalFilename == null || originalFilename.isEmpty()) {
             throw new IllegalArgumentException("Filename cannot be empty");
         }
@@ -68,8 +73,10 @@ public class DocumentServiceImpl implements DocumentService {
         FileType fileType = determineFileType(originalFilename);
         Path filePath = Paths.get(storagePath, originalFilename);
 
+        // Save in storage
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
+        //Create entity
         Document document = new Document();
         document.setName(originalFilename);
         document.setPath(filePath.toString());
@@ -78,15 +85,21 @@ public class DocumentServiceImpl implements DocumentService {
         return repository.save(document);
     }
 
+    /**
+     * Create a new txt file from a given text
+     */
     @Override
     public Document createTextDocument(String name, String text) throws Exception {
+        // Safety check
         if (repository.findByName(name).isPresent()) {
             throw new DuplicateDocumentException("Document with name '" + name + "' already exists");
         }
 
+        // Create file
         Path filePath = Paths.get(storagePath, name);
         Files.writeString(filePath, text);
 
+        // Create entity
         Document document = new Document();
         document.setName(name);
         document.setPath(filePath.toString());
@@ -109,12 +122,17 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
+    /**
+     * Retrieve the contents of a docx file as html
+     */
     @Override
     public String getDocumentAsHtml(Long documentId) {
         Document document = findById(documentId);
+        // only allow docx
         if (document.getFileType() != FileType.DOCX) {
             throw new IllegalArgumentException("HTML conversion only supported for DOCX files.");
         }
+
         try {
             return DocxHelper.convertToHtml(document.getPath());
         } catch (IOException e) {
@@ -123,6 +141,9 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
+    /**
+     * Retrieve a file from the storage as a byte array
+     */
     @Override
     public byte[] downloadDocument(Long documentId) {
         Document document = findById(documentId);
@@ -134,6 +155,9 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
+    /**
+     * Finds all documents and optionally filters results by name and type
+     */
     @Override
     public List<Document> findAll(String q, FileType type) {
         if (q != null && !q.isEmpty() && type != null) {
@@ -154,6 +178,9 @@ public class DocumentServiceImpl implements DocumentService {
         return repository.findByName(name);
     }
 
+    /**
+     * Get the type of a given file
+     */
     private FileType determineFileType(String filename) {
         String lower = filename.toLowerCase();
         if (lower.endsWith(".txt")) {

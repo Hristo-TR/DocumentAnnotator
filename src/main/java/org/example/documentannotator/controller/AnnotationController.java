@@ -50,6 +50,9 @@ public class AnnotationController {
                 .body(annotationConverter.toDto(saved));
     }
 
+    /**
+     * Retrives all annotation, optionally filtered by document, label, type and page
+     */
     @GetMapping
     public ResponseEntity<List<AnnotationDto>> getAllAnnotations(
             @RequestParam(required = false) Long documentId,
@@ -73,15 +76,20 @@ public class AnnotationController {
         return ResponseEntity.ok(annotationConverter.toDtoList(annotations));
     }
 
+    /**
+     * Retrieve annotation by its id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<AnnotationDto> getAnnotation(@PathVariable Long id) {
         Annotation annotation = annotationService.findById(id);
         return ResponseEntity.ok(annotationConverter.toDto(annotation));
     }
 
+    /**
+     * Update the annotation with given id
+     */
     @PutMapping("/{id}")
     public ResponseEntity<AnnotationDto> updateAnnotation(@PathVariable Long id, @Valid @RequestBody AnnotationDto annotationDto) {
-        Annotation existing = annotationService.findById(id);
         Annotation updated = annotationConverter.toEntity(annotationDto);
 
         updated.setId(id);
@@ -96,6 +104,9 @@ public class AnnotationController {
         return ResponseEntity.ok(annotationConverter.toDto(saved));
     }
 
+    /**
+     * Delete the annotation with the given id
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnnotation(@PathVariable Long id) {
         annotationService.deleteById(id);

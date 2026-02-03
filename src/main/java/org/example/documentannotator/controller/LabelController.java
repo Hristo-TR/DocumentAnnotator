@@ -23,6 +23,9 @@ public class LabelController {
         this.labelConverter = labelConverter;
     }
 
+    /**
+     * Create a new label
+     */
     @PostMapping
     public ResponseEntity<LabelDto> createLabel(@Valid @RequestBody LabelDto labelDto) {
         Label label = labelConverter.toEntity(labelDto);
@@ -37,19 +40,28 @@ public class LabelController {
                 .body(labelConverter.toDto(saved));
     }
 
+    /**
+     * Retrieve all labels
+     */
     @GetMapping
     public ResponseEntity<List<LabelDto>> getAllLabels(
-            @RequestParam(required = false, defaultValue = "false") boolean tree) {
-        List<Label> labels = tree ? labelService.findAllAsTree() : labelService.findAllFlat();
+            @RequestParam(required = false, defaultValue = "false") boolean parents) {
+        List<Label> labels = parents ? labelService.findAllParents() : labelService.findAllFlat();
         return ResponseEntity.ok(labelConverter.toDtoList(labels));
     }
 
+    /**
+     * Retrieve label with given id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<LabelDto> getLabel(@PathVariable Long id) {
         Label label = labelService.findById(id);
         return ResponseEntity.ok(labelConverter.toDto(label));
     }
 
+    /**
+     * Update the label with the given id
+     */
     @PutMapping("/{id}")
     public ResponseEntity<LabelDto> updateLabel(@PathVariable Long id, @Valid @RequestBody LabelDto labelDto) {
         Label existing = labelService.findById(id);
@@ -72,6 +84,9 @@ public class LabelController {
         return ResponseEntity.ok(labelConverter.toDto(saved));
     }
 
+    /**
+     * Delete the label with the given id
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLabel(@PathVariable Long id) {
         labelService.deleteById(id);

@@ -16,6 +16,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Global exception handler for controllers.
+     * Used for mapping exceptions to a suitable HTTP status in a single place
+     *
+     * @param ex thrown exception
+     * @return Response entity object with a specific HTTP status
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
         Map<String, Object> response = new HashMap<>();

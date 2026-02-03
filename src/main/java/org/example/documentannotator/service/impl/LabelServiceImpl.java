@@ -40,8 +40,11 @@ public class LabelServiceImpl implements LabelService {
         return logger;
     }
 
+    /**
+     * Retrieves all parent labels only
+     */
     @Override
-    public List<Label> findAllAsTree() {
+    public List<Label> findAllParents() {
         List<Label> allLabels = repository.findAll();
         return allLabels.stream()
                 .filter(label -> label.getParentLabel() == null)
@@ -53,6 +56,9 @@ public class LabelServiceImpl implements LabelService {
         return repository.findAll();
     }
 
+    /**
+     * Validates that a label is eligible to be a parent of another
+     */
     @Override
     public void validateParent(Long labelId, Long parentLabelId) {
         if (parentLabelId == null) {
@@ -66,6 +72,9 @@ public class LabelServiceImpl implements LabelService {
         }
     }
 
+    /**
+     * Checks whether a label is descended from another
+     */
     private boolean isDescendant(Long potentialDescendantId, Long ancestorId) {
         Label current = repository.findById(potentialDescendantId).orElse(null);
         while (current != null && current.getParentLabel() != null) {
@@ -79,6 +88,8 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public void deleteById(Long id) {
+        // Safety checks
+
         if (annotationRepository.existsByLabelId(id)) {
             throw new EntityInUseException("Cannot delete label: it is used in annotations");
         }

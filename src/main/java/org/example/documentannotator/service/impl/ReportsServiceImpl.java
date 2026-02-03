@@ -1,6 +1,7 @@
 package org.example.documentannotator.service.impl;
 
 import org.example.documentannotator.data.entity.Annotation;
+import org.example.documentannotator.data.enumeration.AnnotationType;
 import org.example.documentannotator.data.repository.AnnotationRepository;
 import org.example.documentannotator.data.repository.DocumentRepository;
 import org.example.documentannotator.data.repository.LabelLinkRepository;
@@ -54,9 +55,9 @@ public class ReportsServiceImpl implements ReportsService {
                 annotationRepository.findByDocumentIdAndLabelId(documentId, labelId);
 
         return annotations.stream()
-                .filter(a -> a.getPageNumber() != null)
+                .filter(a -> a.getAnnotationType() == AnnotationType.REGION)
                 .collect(Collectors.groupingBy(
-                        Annotation::getPageNumber,
+                        a -> a.getPageNumber() != null ? a.getPageNumber() : 1,
                         Collectors.counting()
                 ))
                 .entrySet().stream()

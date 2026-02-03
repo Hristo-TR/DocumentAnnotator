@@ -29,6 +29,9 @@ public class LabelLinkController {
         this.labelLinkConverter = labelLinkConverter;
     }
 
+    /**
+     * Create a new link between labels
+     */
     @PostMapping
     public ResponseEntity<LabelLinkDto> createLabelLink(@Valid @RequestBody LabelLinkDto labelLinkDto) {
         LabelLink labelLink = labelLinkConverter.toEntity(labelLinkDto);
@@ -44,6 +47,9 @@ public class LabelLinkController {
                 .body(labelLinkConverter.toDto(saved));
     }
 
+    /**
+     * Retrieve all label links, optionally filtering by from/to labels
+     */
     @GetMapping
     public ResponseEntity<List<LabelLinkDto>> getAllLabelLinks(
             @RequestParam(required = false) Long fromLabelId,
@@ -65,12 +71,18 @@ public class LabelLinkController {
         return ResponseEntity.ok(labelLinkConverter.toDtoList(labelLinks));
     }
 
+    /**
+     * Retrieve a label link given its id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<LabelLinkDto> getLabelLink(@PathVariable Long id) {
         LabelLink labelLink = labelLinkService.findById(id);
         return ResponseEntity.ok(labelLinkConverter.toDto(labelLink));
     }
 
+    /**
+     * updates the label link with given id
+     */
     @PutMapping("/{id}")
     public ResponseEntity<LabelLinkDto> updateLabelLink(@PathVariable Long id, @Valid @RequestBody LabelLinkDto labelLinkDto) {
         LabelLink existing = labelLinkService.findById(id);
@@ -88,6 +100,9 @@ public class LabelLinkController {
         return ResponseEntity.ok(labelLinkConverter.toDto(saved));
     }
 
+    /**
+     * delete a label link with given id
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLabelLink(@PathVariable Long id) {
         labelLinkService.deleteById(id);
